@@ -29,4 +29,4 @@ jobs:
 
     - name: Deploy to Azure Functions
       run: |
-        func azure functionapp publish <python-123>
+        func azure functionapp publish python-123
