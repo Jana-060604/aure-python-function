@@ -1,0 +1,43 @@
+name: Azure Functions Python CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Step 1: Checkout code from the repository
+    - name: Checkout the repository
+      uses: actions/checkout@v2
+
+    # Step 2: Set up Python environment
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    # Step 3: Install dependencies
+    - name: Install dependencies
+      run: |
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+    # Step 4: Install Azure Functions Core Tools
+    - name: Install Azure Functions Core Tools
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y azure-functions-core-tools-4
+
+    # Step 5: Login to Azure using the credentials stored in GitHub Secrets
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    # Step 6: Deploy the function app to Azure
+    - name: Deploy to Azure Functions
+      run: |
+        func azure functionapp publish python-123
